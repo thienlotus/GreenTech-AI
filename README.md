@@ -1,120 +1,158 @@
-# 🌿 GreenTech - Hệ Thống Giám Sát Dịch Hại Nông Nghiệp Thông Minh (AI-Powered)
+# GreenTech-AI: Intelligent Agricultural Pest Monitoring Platform
 
-<p align="center">
-  <img src="https://img.shields.io/badge/Python-3.9+-blue.svg" alt="Python Version" />
-  <img src="https://img.shields.io/badge/PHP-8.0+-purple.svg" alt="PHP Version" />
-  <img src="https://img.shields.io/badge/YOLO-v11%20Medium-green.svg" alt="YOLOv11" />
-  <img src="https://img.shields.io/badge/Database-MySQL-orange.svg" alt="MySQL" />
-  <img src="https://img.shields.io/badge/Container-Docker-2496ED.svg" alt="Docker" />
-  <img src="https://img.shields.io/badge/Status-Active-brightgreen.svg" alt="Status" />
-</p>
+[![Python](https://img.shields.io/badge/Python-3.9+-blue.svg?style=flat-square&logo=python)](https://www.python.org/)
+[![YOLOv11](https://img.shields.io/badge/YOLO-v11%20Medium-green.svg?style=flat-square)](https://github.com/ultralytics/ultralytics)
+[![OpenCV](https://img.shields.io/badge/OpenCV-Computer%20Vision-red.svg?style=flat-square&logo=opencv)](https://opencv.org/)
+[![PHP](https://img.shields.io/badge/Web%20Tier-PHP%208.2-purple.svg?style=flat-square&logo=php)](https://www.php.net/)
+[![MySQL](https://img.shields.io/badge/Database-MySQL%208.0-orange.svg?style=flat-square&logo=mysql)](https://www.mysql.com/)
+[![Docker](https://img.shields.io/badge/DevOps-Docker%20Compose-2496ED.svg?style=flat-square&logo=docker)](https://www.docker.com/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square)](LICENSE)
 
----
-
-## 📌 Giới Thiệu Dự Án
-
-**GreenTech** là nền tảng chuyển đổi số trong nông nghiệp, ứng dụng thị giác máy tính (**Computer Vision**) và **Trí tuệ Nhân tạo (YOLOv11)** nhằm tự động phát hiện, giám sát và cảnh báo mật độ sâu bệnh hại trên cây trồng theo thời gian thực.
-
-Dự án phục vụ nghiên cứu khoa học (NCKH) và định hướng ứng dụng thực tế cho hộ gia đình và nông hộ quy mô vừa và nhỏ, giúp tối ưu hóa việc sử dụng thuốc bảo vệ thực vật, bảo vệ mùa màng và nâng cao năng suất.
+> Production-ready, edge-compatible Computer Vision platform utilizing fine-tuned YOLOv11 Medium and OpenCV to detect, track, and alert against 5 common agricultural pest species with an automated 4-level risk warning engine.
 
 ---
 
-## 🚀 Các Tính Năng Nổi Bật
+## 1. System Architecture Overview
 
-1. **Nhận Diện Sâu Bệnh Tự Động (AI Detection):**
-   * Mô hình **YOLOv11 Medium Optimized** nhận diện chính xác 5 loài sinh vật/dịch hại phổ biến:
-     * 🟢 **Rệp mềm** (*Aphids*)
-     * 🟡 **Bọ cánh cứng** (*Bocanhcung*)
-     * 🦗 **Châu chấu** (*Chauchau*)
-     * 🐌 **Ốc sên** (*Ocsen*)
-     * 🐛 **Sâu hại** (*Sauhai*)
-2. **Hệ Thống Cảnh Báo 4 Cấp Độ (Traffic Light Alert):**
-   * 🟢 **Xanh (Bình thường):** Mật độ an toàn, không phát hiện nguy cơ.
-   * 🟡 **Vàng (Cảnh báo nhẹ):** Xuất hiện từ 3 cá thể.
-   * 🟠 **Cam (Cảnh báo trung bình):** Xuất hiện từ 5 cá thể, có xu hướng lan rộng.
-   * 🔴 **Đỏ (Nguy hiểm):** Mật độ cao (8+ cá thể), cảnh báo khẩn cấp cần can thiệp.
-3. **Phân Hệ Dashboard Quản Lý:**
-   * **Dashboard Nông Dân:** Thống kê lịch sử dịch bệnh theo lô thửa, khuyến nghị xử lý thuốc BVTV theo tiêu chuẩn.
-   * **Dashboard Gia Đình:** Giao diện tối giản, trực quan cho quy mô vườn nhà / ban công sân thượng.
-4. **Kiến Trúc Tách Rời (Decoupled Architecture):**
-   * **AI Microservice:** Python (Flask + Ultralytics YOLO) đóng gói Docker và deploy trên Cloud (Hugging Face Spaces).
-   * **Web Application:** PHP, MySQL và Bootstrap responsive cho trải nghiệm mượt mà.
+Following Clean Architecture standards, the solution segregates computer vision inference, user workflow presentations, and persistence schemas into distinct boundaries.
 
----
+```mermaid
+flowchart TD
+    Edge_Stream["Camera Stream / Field Images"]
 
-## 🛠️ Kiến Trúc Hệ Thống & Công Nghệ
+    subgraph AI_Core["src/ai_service: Computer Vision Engine (Port 7860)"]
+        Preprocess["Image Normalization & Letterbox"]
+        YOLO["YOLOv11 Medium Detection Backbone"]
+        Thresholding["Dynamic Class-Specific Threshold Filter"]
+        TrackingEngine["Multi-Object Trajectory Tracker"]
+        AlertClassifier["4-Level Risk Engine (Green/Yellow/Orange/Red)"]
+        REST_Endpoints["Flask / FastAPI Inference Server"]
+    end
 
-```
-[ Camera / Ảnh chụp ]
-        │
-        ▼
-[ PHP Web Dashboard ] ──(REST API)──► [ Python Flask AI Server (YOLOv11) ]
-        │                                           │
-        ▼                                           ▼
-[ MySQL Database ]                           [ Bounding Boxes & Alerts ]
+    subgraph Web_App["src/web: Dashboard & Application Tier (Port 8080)"]
+        Auth["Authentication & User Roles"]
+        FarmerPortal["Commercial Farmer Analytics Portal"]
+        FamilyPortal["Family Garden Monitoring Interface"]
+        TrendReports["Pest Infestation Historical Reports"]
+    end
+
+    subgraph DB["src/database: Storage Tier (Port 3306)"]
+        MySQL[("MySQL Database<br/>• Outbreak Coordinates<br/>• User Profiles<br/>• Surveillance Logs")]
+    end
+
+    Edge_Stream --> Preprocess
+    Preprocess --> YOLO
+    YOLO --> Thresholding
+    Thresholding --> TrackingEngine
+    TrackingEngine --> AlertClassifier
+    AlertClassifier --> REST_Endpoints
+
+    REST_Endpoints <-->|REST API / JSON| Web_App
+    Web_App <--> DB
 ```
 
-* **Ngôn ngữ & Framework:**
-  * **AI & Processing:** Python, Flask, Flask-CORS, OpenCV, NumPy, Ultralytics YOLOv11.
-  * **Backend Web:** PHP 8.x, MySQL.
-  * **Containerization:** Docker.
-* **API Endpoints:**
-  * `POST /detect`: Upload ảnh và nhận diện dịch hại kèm bounding box.
-  * `POST /live_track`: Nhận diện & theo dõi quỹ đạo thời gian thực từ camera stream.
+Detailed architectural specifications and mathematical formulations are documented in [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).  
+Student scientific research (NCKH) methodology and experimental benchmarks are documented in [docs/RESEARCH_PAPER.md](docs/RESEARCH_PAPER.md).
 
 ---
 
-## 📦 Hướng Dẫn Cài Đặt & Chạy Thử (Local)
+## 2. Core Features & Capabilities
 
-### 1. Cài đặt Cơ sở Dữ liệu & Web Dashboard (PHP)
-1. Cài đặt **XAMPP / Laragon** (hỗ trợ PHP 8.0+ và MySQL).
-2. Tạo database mới trong phpMyAdmin tên là: `nckh_giam_sat_dich_hai`.
-3. Import file `nckh_giam_sat_dich_hai.sql` vào database vừa tạo.
-4. Cấu hình cổng kết nối database tại file `db_connect.php`:
-   ```php
-   $servername = "localhost:3307"; // hoặc localhost:3306
-   $username   = "root";
-   $password   = "";
-   $dbname     = "nckh_giam_sat_dich_hai";
-   ```
-5. Đặt source code vào thư mục `htdocs` (XAMPP) hoặc `www` (Laragon) và mở trình duyệt tại: `http://localhost/GreenTech/index.php`.
+1. **Precision Pest Classification (YOLOv11 Medium):**
+   * Real-time inference across 5 high-impact agricultural pest species in Vietnam:
+     * **Rệp mềm (Aphids)**
+     * **Bọ cánh cứng (Beetles)**
+     * **Châu chấu (Grasshoppers)**
+     * **Ốc sên (Snails)**
+     * **Sâu hại (Caterpillars / Larvae)**
+2. **Automated 4-Level Outbreak Early Warning Engine:**
+   * **Level 1: Xanh (Safe):** $\le 2$ pests detected; regular surveillance cycle.
+   * **Level 2: Vàng (Caution):** $3 - 5$ pests detected; elevated sampling recommended.
+   * **Level 3: Cam (Warning):** $6 - 10$ pests detected; localized biological treatment alert.
+   * **Level 4: Đỏ (Critical):** $> 10$ pests detected; emergency containment quarantine alert.
+3. **Dual Stakeholder Dashboards:**
+   * **Farmer Dashboard:** Large-scale acreage tracking, chemical/biological treatment recommendation ledger, and epidemic heatmaps.
+   * **Family Garden Dashboard:** Streamlined user experience for urban farming, greenhouse, and rooftop balcony garden management.
 
-### 2. Cài đặt AI Backend (Python)
-1. Di chuyển vào thư mục dự án và tạo môi trường ảo:
-   ```bash
-   python -m venv venv
-   source venv/bin/activate  # Trên Linux/macOS
-   # Hoặc trên Windows:
-   venv\Scripts\activate
-   ```
-2. Cài đặt các thư viện cần thiết:
-   ```bash
-   pip install -r requirements.txt
-   ```
-3. Đặt file trọng số mô hình `best.pt` vào cùng thư mục với `api_model.py`.
-4. Khởi động AI API Server:
-   ```bash
-   python api_model.py
-   ```
-   Server AI sẽ khởi chạy tại cổng `http://localhost:7860`.
+---
 
-### 3. Chạy qua Docker (Tùy chọn)
+## 3. Repository Structure
+
+```text
+GreenTech-AI/
+├── src/
+│   ├── ai_service/             # YOLOv11 Computer Vision inference pipeline
+│   │   ├── api_model.py        # Model loader, tracking & REST endpoints
+│   │   ├── export_utils.py     # CSV/JSON export utilities
+│   │   └── requirements.txt    # Python dependencies (Torch, Ultralytics, OpenCV)
+│   ├── web/                    # Presentation and business workflow layer
+│   │   ├── index.php           # Unified application portal
+│   │   ├── dashboard_*.php     # Specialized farmer & family garden portals
+│   │   ├── thong_ke.php        # Real-time analytics & charts
+│   │   ├── process_*.php       # Request handlers & async live processors
+│   │   ├── ai_config.php       # AI backend connectivity settings
+│   │   ├── db_connect.php      # Database connection pooling
+│   │   └── pest_translate.php  # Scientific nomenclature mapper
+│   └── database/               # Relational database schemas
+│       └── nckh_giam_sat_dich_hai.sql
+├── deploy/                     # Deployment configurations
+│   ├── Dockerfile              # Python + OpenCV container definition
+│   └── docker-compose.yml      # Multi-container stack (AI, Web, MySQL)
+├── docs/                       # Technical & Academic documentation
+│   ├── ARCHITECTURE.md         # Full Clean Architecture documentation
+│   └── RESEARCH_PAPER.md       # Student scientific research paper summary
+├── .env.example
+├── .gitignore
+├── LICENSE
+└── README.md
+```
+
+---
+
+## 4. Quickstart Guide
+
+### Running with Docker Compose (Recommended)
+
 ```bash
-docker build -t greentech-ai:latest .
-docker run -p 7860:7860 greentech-ai:latest
+# Clone the repository
+git clone https://github.com/thienlotus/GreenTech-AI.git
+cd GreenTech-AI
+
+# Launch the entire multi-container ecosystem
+cd deploy
+docker-compose up -d --build
+```
+
+* **Web Application Portal:** `http://localhost:8080`
+* **AI Model Inference Server:** `http://localhost:7860`
+* **MySQL Database:** `localhost:3306`
+
+### Running the Python AI Inference Engine Locally
+
+```bash
+cd src/ai_service
+python -m venv venv
+# On Windows:
+.\venv\Scripts\activate
+# On Linux/macOS:
+source venv/bin/activate
+
+pip install -r requirements.txt
+python api_model.py
 ```
 
 ---
 
-## 👨‍💻 Tác Giả & Đóng Góp
+## 5. Author & Academic Attribution
 
-* **Lê Vũ Thiên (thienlotus)** - *Lead Developer & AI System Architect*
-  * GitHub: [@thienlotus](https://github.com/thienlotus)
-  * Vai trò: Thiết kế kiến trúc hệ thống, huấn luyện mô hình YOLOv11, xây dựng REST API và tích hợp Web Dashboard.
+* **Lê Vũ Thiên** (`@thienlotus`)
+* AI & Software Engineering Student | Focus: Computer Vision, Clean Architecture & Enterprise Backend
+* Location: Hanoi, Vietnam
+* Email: [thienchip1310@gmail.com](mailto:thienchip1310@gmail.com)
+* GitHub: [https://github.com/thienlotus](https://github.com/thienlotus)
 
 ---
 
-## 📄 Bản Quyền (License)
+## 6. License
 
-Dự án được phát triển phục vụ mục đích nghiên cứu học thuật và phi thương mại.
-Mọi hình thức tái sử dụng vui lòng ghi rõ nguồn tác giả.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.

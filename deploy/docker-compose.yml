@@ -1,0 +1,55 @@
+version: '3.8'
+
+services:
+  # Python AI Inference Service (YOLOv11 & OpenCV)
+  ai-inference-service:
+    build:
+      context: ..
+      dockerfile: deploy/Dockerfile
+    container_name: greentech-ai-service
+    restart: unless-stopped
+    ports:
+      - "7860:7860"
+    environment:
+      - PYTHONUNBUFFERED=1
+      - PORT=7860
+    networks:
+      - greentech-network
+
+  # PHP Web Dashboard & Controller
+  web-dashboard:
+    image: php:8.2-apache
+    container_name: greentech-web
+    restart: unless-stopped
+    ports:
+      - "8080:80"
+    volumes:
+      - ../src/web:/var/www/html
+    depends_on:
+      - mysql-db
+      - ai-inference-service
+    networks:
+      - greentech-network
+
+  # MySQL Relational Database
+  mysql-db:
+    image: mysql:8.0
+    container_name: greentech-db
+    restart: unless-stopped
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: nckh_giam_sat_dich_hai
+    volumes:
+      - db-data:/var/lib/mysql
+      - ../src/database/nckh_giam_sat_dich_hai.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    networks:
+      - greentech-network
+
+networks:
+  greentech-network:
+    driver: bridge
+
+volumes:
+  db-data:
