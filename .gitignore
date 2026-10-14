@@ -1,0 +1,49 @@
+# Environment variables & Local Config
+.env
+*.env.local
+
+# Temporary Uploads & Inference Results
+uploads/
+results/
+cam_*.jpg
+*.csv
+live_report_*.csv
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+.venv/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Model Weights (Best kept out of GitHub free tier / hosted on HF)
+*.pt
+*.onnx
+*.engine
+
+# IDE & OS
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+.DS_Store
+Thumbs.db
